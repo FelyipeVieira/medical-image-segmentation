@@ -1,0 +1,162 @@
+Metadata-Version: 2.4
+Name: medical-image-segmentation
+Version: 0.1.0
+Summary: Model-agnostic medical image segmentation framework.
+Author: Medical Image Segmentation Contributors
+License: MIT
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=2.3
+Requires-Dist: torchvision>=0.18
+Requires-Dist: monai>=1.3
+Requires-Dist: lightning>=2.3
+Requires-Dist: SimpleITK>=2.3
+Requires-Dist: nibabel>=5.2
+Requires-Dist: numpy>=1.26
+Requires-Dist: scipy>=1.12
+Requires-Dist: pandas>=2.2
+Requires-Dist: scikit-image>=0.23
+Requires-Dist: opencv-python-headless>=4.10
+Requires-Dist: albumentations>=1.4
+Requires-Dist: matplotlib>=3.9
+Requires-Dist: plotly>=5.22
+Requires-Dist: pydicom>=3.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: pydantic>=2.7
+Requires-Dist: tensorboard>=2.17
+Provides-Extra: tracking
+Requires-Dist: mlflow>=2.14; extra == "tracking"
+Requires-Dist: wandb>=0.17; extra == "tracking"
+Provides-Extra: sam
+Requires-Dist: segment-anything>=1.0; extra == "sam"
+Provides-Extra: mesh
+Requires-Dist: trimesh>=4.4; extra == "mesh"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Requires-Dist: pytest-cov>=5; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: mkdocs-material>=9.5; extra == "docs"
+Requires-Dist: mkdocstrings[python]>=0.25; extra == "docs"
+Dynamic: license-file
+
+# medical-image-segmentation
+
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-blue)](https://python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-framework-ee4c2c)](https://pytorch.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+
+## Overview
+
+Production-oriented, model-agnostic medical-image segmentation for reproducible
+2D/3D research. It combines PyTorch Lightning orchestration, MONAI networks and
+inference, physical-space IO, surface metrics, portable exports, and explicit
+extension points for foundation and interactive models.
+
+> Research software only. It is not a certified medical device and must not be
+> used as the sole basis for clinical decisions.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A["DICOM / DICOMDIR / NIfTI / Raster"] --> B["Dataset and preprocessing"]
+    B --> C["Augmentation and patches"]
+    C --> D["Model factory"]
+    D --> E["Lightning training"]
+    D --> F["Sliding-window + TTA"]
+    F --> G["Metrics and visualization"]
+    G --> H["NIfTI / DICOM SEG / PNG / TIFF / STL / JSON / CSV"]
+    I["SAM / MedSAM / future foundation adapters"] -.-> D
+```
+
+## Supported Models
+
+UNet, UNet++, Attention UNet, VNet, SegResNet, DynUNet, and Swin UNETR are
+constructed through the MONAI-backed factory. SAM and MedSAM intentionally use
+checkpoint-specific adapters because their prompts and preprocessing are not
+interchangeable with conventional semantic segmentation.
+
+## Project Structure
+
+`src/medical_image_segmentation` contains datasets, preprocessing, models,
+losses, metrics, training, inference, visualization, explainability, exports,
+configuration, and utilities. Checkout entrypoints are `src/train.py`,
+`src/predict.py`, `src/inference.py`, and `src/evaluate.py`.
+
+## Installation
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -e ".[tracking,sam,mesh,dev,docs]"
+```
+
+## Training
+
+Create a CSV manifest with `image`, `mask`, and optional `id`. Use
+`ExperimentConfig`, `SegmentationDataset`, `ModelFactory`, `SegmentationTask`,
+and `create_trainer`. Lightning provides AMP, checkpoints, resume via `ckpt_path`,
+early stopping, learning-rate scheduling, and TensorBoard logging. MLflow and
+Weights & Biases are optional tracking extras.
+
+## Inference
+
+`InferenceEngine.predict()` supports full-image or MONAI sliding-window
+inference, overlap control, probability maps, multiclass output, and flip-based
+test-time augmentation.
+
+## Evaluation
+
+```bash
+mis-evaluate prediction.npy target.npy --output outputs/metrics.json
+```
+
+## Datasets
+
+DICOM, DICOMDIR, NIfTI, PNG, TIFF, and JPEG are supported by SimpleITK/MONAI
+pipelines. Manifests keep cohort splits explicit. Always split by patient before
+augmentation to prevent leakage.
+
+## Metrics
+
+Dice, IoU, precision, recall/sensitivity, specificity, confusion counts,
+Hausdorff distance, ASSD, and volumetric similarity. Surface distances accept
+physical voxel spacing.
+
+## Examples
+
+See `docs/usage.md`, docstrings, `scripts/example_config.yaml`, and unit tests.
+
+## Screenshots
+
+![Overlay placeholder](assets/overlay-placeholder.svg)
+
+## Performance Benchmarks
+
+No universal benchmark is claimed. Publish hardware, software versions, spatial
+resolution, patch size, precision, dataset split, latency, memory, and confidence
+intervals. A benchmark template is provided in the documentation.
+
+## Citation
+
+Use [`CITATION.cff`](CITATION.cff).
+
+## License
+
+[MIT](LICENSE)
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributions require typed APIs,
+docstrings, tests, reproducible settings, and de-identified fixtures.
+
+## Future Work
+
+Classification, radiomics, foundation models, self-supervision, federated
+learning, vision transformers, interactive segmentation, MONAI Label,
+Docker/Kubernetes, REST inference, cloud execution, and PACS/RIS integration.
+

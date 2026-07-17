@@ -1,0 +1,4 @@
+[console_scripts]
+mis-evaluate = medical_image_segmentation.cli:evaluate_main
+mis-predict = medical_image_segmentation.cli:predict_main
+mis-train = medical_image_segmentation.cli:train_main
