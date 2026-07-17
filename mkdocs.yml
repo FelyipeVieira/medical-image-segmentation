@@ -1,0 +1,14 @@
+site_name: Medical Image Segmentation
+theme: {name: material}
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Usage: usage.md
+  - Benchmarks: benchmarks.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+

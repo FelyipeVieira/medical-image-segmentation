@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this framework, please cite it."
+title: "medical-image-segmentation"
+type: software
+version: 0.1.0
+date-released: 2026-07-12
+authors:
+  - family-names: "Vieira"
+    given-names: "Felipe"
+
+abstract: >-
+  An open-source application for loading, visualizing, and exploring
+  medical images in the DICOM format.
+
+keywords: DICOM, medical imaging, medical image visualization,radiology, healthcare, Python.
+
+license: MIT
+
+repository-code: "https://github.com/FelyipeVieira/medical-image-segmentation"
+

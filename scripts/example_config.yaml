@@ -1,0 +1,12 @@
+model: unet
+spatial_dims: 3
+in_channels: 1
+out_channels: 2
+image_size: [96, 96, 96]
+batch_size: 2
+epochs: 100
+learning_rate: 0.0001
+precision: 16-mixed
+manifest: data/manifest.csv
+output_directory: outputs
+
